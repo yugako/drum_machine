@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Drum Machine</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="drum">
+        <header class="header mt-3 text-center">
+            <h1 class="text-warning">Звукова машина для згаяння часу v1.0</h1>
+            <p>Нудно? Немає чим зайнятись? Або може хочете просто чимось побавитись? Тоді моя невеличка програмка допоможе згаяти Вам час :)</p>
+            <div class="enableApp">
+                <input type="checkbox" class="checkbox" id="checkbox" />
+                <label for="checkbox" @click='enableApp' class="on">{{state}}</label>
+            </div>
+            <div class="range-slider" v-if='enable'>
+                <h3>Гучність</h3>
+              <input class="range-slider__range" type="range" v-model="value" value="0.5" min="0" max="1" step="0.01">
+              <span class="range-slider__value">{{(value * 100).toFixed(0)}}%</span>
+            </div>
+            <button class="button" v-if='enable' @click='switchPanels'>Переключитись на '{{nextPanel}}' </button>
+            
+        </header>
+        <!-- /.header -->
+        <input type="text" id="focusText" @keydown="setLastKey">
+        <transition name='fade'>
+            <div class="wrapper" v-if='enable'>
+                <div class="rock" v-if='!show'>
+                    <div class="keys">
+                        <div v-for='(audio,index) in drumMachine' :data-num='audio.keyCode' :key='index' :class="{playing:audio.keyCode == active}" @click="play(audio, $event)" class="key">
+                            <kbd>
+                                {{audio.keyName}}</kbd>
+                            <span class="sound">{{audio.soundName}}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.rock -->
+                <div class="piano" v-else='show'>
+                    <ul class="piano-list">
+                        <li class="keyPiano" v-for='(audio,index) in piano' :key='index' :data-key="audio.keyCode" :class="{active:audio.keyCode == active}" @click="play(audio, $event)">
+                            <span class="keyName">{{audio.keyName}}</span>
+                        </li>
+                    </ul>
+                    <!-- End Piano -->
+                </div>
+                <!-- /.piano -->
+            </div>
+            <!-- /.wrapper -->
+        </transition>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
